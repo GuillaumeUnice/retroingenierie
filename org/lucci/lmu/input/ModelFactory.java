@@ -23,6 +23,7 @@ public abstract class ModelFactory
 		factoryMap.put("lmu", LmuParser.getParser());
 		factoryMap.put("jar", new JarFileAnalyser());
 		factoryMap.put("java", new JavaFileAnalyser());
+
 	}
 
 	public static ModelFactory getModelFactory(String type)
