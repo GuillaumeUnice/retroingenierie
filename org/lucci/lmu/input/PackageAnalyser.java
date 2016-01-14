@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,11 +34,11 @@ import toools.ClassPath;
 import toools.io.FileUtilities;
 import toools.io.file.RegularFile;
 
-public class JavaFileAnalyser extends ModelFactory {
+public class PackageAnalyser extends ModelFactory {
 
 	
-	public AbstractJavaAnalyser createConcreteProduct(String path) throws ParseError {
-		return new FileJavaAnalyser();
+	@Override
+	public AbstractJavaAnalyser createConcreteProduct(String path) throws ParseError, ModelException {
+		return new JavaPackageAnalyser();
 	}
-
 }

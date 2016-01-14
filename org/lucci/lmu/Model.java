@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.lucci.lmu.input.ParseError;
+
 /*
  * Created on Oct 2, 2004
  */
@@ -170,6 +172,9 @@ public class Model extends ModelElement
 
 		return clone;
 	}
+
+	public Model createConcreteModel(String path) throws ParseError
+	{ return null;}
 	
 	
 

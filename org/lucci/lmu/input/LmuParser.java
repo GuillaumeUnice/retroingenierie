@@ -31,6 +31,15 @@ import toools.text.TextUtilities;
 
 public class LmuParser extends ModelFactory
 {
+	
+	@Override
+	public AbstractLmuAnalyser createConcreteProduct(String path) throws ParseError
+	{
+		
+		return FileLmuAnalyser2.getParser();
+	}
+	
+	/*//singleton
     private final static LmuParser parser = new LmuParser();
 
     public static LmuParser getParser()
@@ -49,9 +58,19 @@ public class LmuParser extends ModelFactory
     private String comment = "";
 
     @Override
-    public Model createModel(byte[] data) throws ParseError, ModelException
+    public Model createConcreteProduct(String str) throws ParseError, ModelException
     {
-	return createModel(new String(data));
+		RegularFile inputFile = new RegularFile(str);
+    	byte[] data;
+		try {
+			data = inputFile.getContent();
+	    	return createModel(new String(data));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+
     }
 
     public Model createModel(String text) throws ParseError, ModelException
@@ -216,6 +235,7 @@ public class LmuParser extends ModelFactory
 	    else if (line.size() > 0)
 	    {
 		String statement = line.get(0);
+		System.out.println(statement);
 
 		if (statement.startsWith("#"))
 		{
@@ -750,7 +770,7 @@ public class LmuParser extends ModelFactory
 		    }
 		    else
 		    {
-			ModelFactory modelFactory = ModelFactory.getModelFactory(fileExtension.toLowerCase());
+			ModelFactory2 modelFactory = ModelFactory2.getModelFactory(fileExtension.toLowerCase());
 
 			if (modelFactory == null)
 			{
@@ -762,16 +782,11 @@ public class LmuParser extends ModelFactory
 
 			    if (newModel == null)
 			    {
-				try
-				{
-				    newModel = modelFactory.createModel(file.getContent());
+				  //  newModel = modelFactory.createModell(file.getContent());
 				    model.merge(newModel);
 				    modelCache.put(file, newModel);
-				}
-				catch (IOException ex)
-				{
-				    syntax("I/O error while reading file " + file.getPath());
-				}
+	
+		
 			    }
 			}
 		    }
@@ -832,5 +847,7 @@ public class LmuParser extends ModelFactory
 	    }
 	}
     }
+*/
+
 
 }

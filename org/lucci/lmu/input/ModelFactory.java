@@ -19,10 +19,12 @@ public abstract class ModelFactory
 
 	static
 	{
-		factoryMap.put(null, LmuParser.getParser());
-		factoryMap.put("lmu", LmuParser.getParser());
+		factoryMap.put(null, new PackageAnalyser());
+		factoryMap.put("lmu", new LmuParser());
 		factoryMap.put("jar", new JarFileAnalyser());
-		factoryMap.put("java", new JavaFileAnalyser());
+		factoryMap.put("class", new JavaFileAnalyser());
+		//factoryMap.put("lol", new PackageAnalyser());
+		//factoryMap.put("java", JavaParser.getParser());
 
 	}
 
@@ -31,5 +33,6 @@ public abstract class ModelFactory
 		return factoryMap.get(type);
 	}
 
-	public abstract Model createModel(byte[] data) throws ParseError, ModelException;
+	public abstract AbstractAnalyser createConcreteProduct(String path) throws ParseError, ModelException;
+	
 }

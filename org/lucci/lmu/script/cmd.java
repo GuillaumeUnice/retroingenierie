@@ -9,6 +9,8 @@ import java4unix.CommandLine;
 
 import org.lucci.lmu.Entity;
 import org.lucci.lmu.Model;
+import org.lucci.lmu.input.AbstractAnalyser;
+import org.lucci.lmu.input.AbstractJavaAnalyser;
 import org.lucci.lmu.input.ModelException;
 import org.lucci.lmu.input.ModelFactory;
 import org.lucci.lmu.input.ParseError;
@@ -27,9 +29,19 @@ import toools.io.file.RegularFile;
  */
 public class cmd extends LmuScript
 {
+
 	public static void main(String[] args) throws Throwable
 	{
-		new cmd().run("/home/sy306571/Téléchargements/all.lmu");
+		cmd test = new cmd();
+		//test.run("/home/21307458/workspace/ProgDist/bin");
+
+		test.run("/home/21307458/workspace/RetroIngenierie/bin/org/lucci/lmu/test", "lol.png");
+		//test.run("/home/21307458/workspace/ProgConc2/bin");
+		
+		//test.run("/home/21307458/Téléchargements/all.lmu");
+		
+		//test.run("/home/21307458/Téléchargements/exo16.jar");
+		//test.run("/home/21307458/workspace/ProgDist/bin/client/MonInterfaceDistante.class");
 	}
 
 	@Override
@@ -40,10 +52,14 @@ public class cmd extends LmuScript
 		List<String> args = cmdLine.findArguments();
 		RegularFile inputFile = new RegularFile(args.get(0));
 		String inputType = FileUtilities.getFileNameExtension(inputFile.getName());
+		
 
 		try
 		{
+			//System.out.println(inputType);
+			//ModelFactory modelFactory = ModelFactory.getModelFactory();
 			ModelFactory modelFactory = ModelFactory.getModelFactory(inputType);
+			
 
 			if (modelFactory == null)
 			{
@@ -51,25 +67,38 @@ public class cmd extends LmuScript
 			}
 			else
 			{
-				RegularFile outputFile = new RegularFile(args.size() == 1 ? FileUtilities.replaceExtensionBy(inputFile.getName(), "pdf") : args.get(1));
+				RegularFile outputFile;
+				try {
+					outputFile = new RegularFile(args.size() == 1 ? FileUtilities.replaceExtensionBy(inputFile.getName(), "pdf") : args.get(1));	
+				} catch (Exception e) {
+
+					outputFile = new RegularFile("lol.pdf");	
+
+				}
 				String outputType = FileUtilities.getFileNameExtension(outputFile.getName());
 				AbstractWriter factory = AbstractWriter.getTextFactory(outputType);
-
+					
 				if (factory == null)
 				{
 					printFatalError("Do not know how to generate '" + outputType + "' code\n");
 				}
 				else
 				{
-					byte[] inputData = inputFile.getContent();
-					Model model = modelFactory.createModel(inputData);
-
+					//byte[] inputData = inputFile.getContent();
+					
+					//Model model = modelFactory.createModel(args.get(0));
+					
+					AbstractAnalyser test = modelFactory.createConcreteProduct(args.get(0));
+					Model model = test.createConcreteModel(args.get(0));
+					
 					printMessage(model.getEntities().size() + " entities and " + model.getRelations().size() + " relations\n");
 
 					try
 					{
 						printMessage("Writing file " + outputFile.getPath() + "\n");
+						
 						byte[] outputBytes = factory.writeModel(model);
+						
 						outputFile.setContent(outputBytes);
 					}
 					catch (WriterException ex)
@@ -90,10 +119,6 @@ public class cmd extends LmuScript
 		catch (ModelException ex)
 		{
 			System.err.println("Model error: " + ex.getMessage() + "\n");
-		}
-		catch (IOException ex)
-		{
-			System.err.println("I/O error: " + ex.getMessage() + "\n");
 		}
 
 		return 0;
