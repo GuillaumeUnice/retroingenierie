@@ -33,10 +33,12 @@ public class JavaPackageAnalyser extends AbstractJavaAnalyser{
 	        	if(path.charAt(path.length() - 1) != '/') {
 	        		path += "/";
 	        	}
-	        	
-	        	if(fileEntry.getName().substring(fileEntry.getName().length() - 5, fileEntry.getName().length()).equals("class")) {
-	            	this.strTest.add(path + fileEntry.getName());
+	        	if(fileEntry.getName().length() > 5) {
+	        		if(fileEntry.getName().substring(fileEntry.getName().length() - 5, fileEntry.getName().length()).equals("class")) {
+		            	this.strTest.add(path + fileEntry.getName());
+		        	}	
 	        	}
+	        	
 	        }
 	    }
 	}
