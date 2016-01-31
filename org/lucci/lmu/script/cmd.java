@@ -35,10 +35,10 @@ public class cmd extends LmuScript
 		cmd test = new cmd();
 		//test.run("/home/21307458/workspace/ProgDist/bin");
 
-		//test.run("/home/21307458/workspace/RetroIngenierie/bin", "lol.png");
-		//test.run("/home/21307458/workspace/RetroIngenierie/bin/org/lucci/lmu/input", "/home/21307458/lol.png");
+		test.run("/home/21307458/workspace/RetroIngenierie/bin", "lol.png");
+		//test.run("/home/21307458/workspace/RetroIngenierie/bin");
 		
-		test.run("/home/21307458/Téléchargements/all.lmu");
+		//test.run("/home/21307458/Téléchargements/all.lmu");
 		
 		//test.run("/home/21307458/Téléchargements/exo16.jar");
 		//test.run("/home/21307458/workspace/ProgDist/bin/client/MonInterfaceDistante.class");

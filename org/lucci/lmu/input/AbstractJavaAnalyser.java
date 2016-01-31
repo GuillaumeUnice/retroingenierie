@@ -1,8 +1,11 @@
 package org.lucci.lmu.input;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,6 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.lucci.lmu.AssociationRelation;
+import org.lucci.lmu.Attribute;
 import org.lucci.lmu.Entities;
 import org.lucci.lmu.Entity;
 import org.lucci.lmu.InheritanceRelation;
@@ -103,81 +108,84 @@ public abstract class AbstractJavaAnalyser extends AbstractAnalyser{
 
 	private void initAttributes(Class<?> clazz, Entity entity, Model model)
 	{
-		System.out.println(clazz);
-		System.out.println(clazz.getClassLoader().getClass());
 
-		/*for (Field field : clazz.getDeclaredFields())
-		{
-			// if the field is not static
-			if ((field.getModifiers() & Modifier.STATIC) == 0)
+		try{
+			for (Field field : clazz.getDeclaredFields())
 			{
-				// System.err.println(clazz.getName() + " " + field.getName());
-				Type fieldType = field.getGenericType();
-
-				if (fieldType instanceof ParameterizedType)
+				// if the field is not static
+				if ((field.getModifiers() & Modifier.STATIC) == 0)
 				{
-					for (Type parameterType : ((ParameterizedType) fieldType).getActualTypeArguments())
+					// System.err.println(clazz.getName() + " " + field.getName());
+					Type fieldType = field.getGenericType();
+		
+					if (fieldType instanceof ParameterizedType)
 					{
-						if (parameterType instanceof Class<?>)
+						for (Type parameterType : ((ParameterizedType) fieldType).getActualTypeArguments())
 						{
-							Class<?> parameterClass = (Class<?>) parameterType;
-							Entity parameterEntity = getEntity(model, parameterClass);
-
-							if (!parameterEntity.isPrimitive())
+							if (parameterType instanceof Class<?>)
 							{
-								AssociationRelation rel = new AssociationRelation(parameterEntity, entity);
+								Class<?> parameterClass = (Class<?>) parameterType;
+								Entity parameterEntity = getEntity(model, parameterClass);
+		
+								if (!parameterEntity.isPrimitive())
+								{
+									AssociationRelation rel = new AssociationRelation(parameterEntity, entity);
+									rel.setType(AssociationRelation.TYPE.AGGREGATION);
+									//
+									// if
+									// (!field.getName().equalsIgnoreCase(parameterEntity.getName()
+									// + 's'))
+									// {
+									// rel.setLabel(field.getName());
+									// }
+									//
+									rel.setLabel(field.getName());
+									rel.setCardinality("0..n");
+									model.addRelation(rel);
+								}
+							}
+						}
+					}
+					else
+					{
+						Entity fieldTypeEntity = getEntity(model, field.getType());
+		
+						if (fieldTypeEntity != null)
+						{
+							if (fieldTypeEntity.isPrimitive())
+							{
+								Attribute att = new Attribute();
+								att.setName(field.getName());
+								att.setVisibility(getVisibility(field));
+								att.setType(fieldTypeEntity);
+								entity.getAttributes().add(att);
+							}
+							else
+							{
+								AssociationRelation rel = new AssociationRelation(fieldTypeEntity, entity);
 								rel.setType(AssociationRelation.TYPE.AGGREGATION);
-								//
-								// if
-								// (!field.getName().equalsIgnoreCase(parameterEntity.getName()
-								// + 's'))
-								// {
-								// rel.setLabel(field.getName());
-								// }
-								//
-								rel.setLabel(field.getName());
-								rel.setCardinality("0..n");
+		
+								// if (fieldTypeEntity.getName().contains("$"))
+								// System.out.println("inner class: " +
+								// fieldTypeEntity.getName());
+		
+								if (fieldTypeEntity.getName().toUpperCase().indexOf(field.getName().toUpperCase()) < 0)
+								{
+									rel.setLabel(field.getName());
+								}
+		
+								rel.setCardinality("1");
 								model.addRelation(rel);
 							}
 						}
 					}
 				}
-				else
-				{
-					Entity fieldTypeEntity = getEntity(model, field.getType());
-
-					if (fieldTypeEntity != null)
-					{
-						if (fieldTypeEntity.isPrimitive())
-						{
-							Attribute att = new Attribute();
-							att.setName(field.getName());
-							att.setVisibility(getVisibility(field));
-							att.setType(fieldTypeEntity);
-							entity.getAttributes().add(att);
-						}
-						else
-						{
-							AssociationRelation rel = new AssociationRelation(fieldTypeEntity, entity);
-							rel.setType(AssociationRelation.TYPE.AGGREGATION);
-
-							// if (fieldTypeEntity.getName().contains("$"))
-							// System.out.println("inner class: " +
-							// fieldTypeEntity.getName());
-
-							if (fieldTypeEntity.getName().toUpperCase().indexOf(field.getName().toUpperCase()) < 0)
-							{
-								rel.setLabel(field.getName());
-							}
-
-							rel.setCardinality("1");
-							model.addRelation(rel);
-						}
-					}
-				}
 			}
-		}*/
-	}
+		
+		} catch (VerifyError e){
+			return;
+		}
+		}
 
 	@SuppressWarnings("finally")
 	private void initOperations(Class<?> clazz, Entity entity, Model model)
