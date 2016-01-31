@@ -1,11 +1,15 @@
 package org.lucci.lmu.input;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 import org.lucci.lmu.Entities;
 import org.lucci.lmu.Entity;
@@ -40,16 +44,26 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 
 		try
 		{
-			// recuperation sous forme de byte
+			// convert to byte
 			RegularFile inputFile = new RegularFile(path);
 			byte[] data = inputFile.getContent();
 			
+			/*File ls = new File(path);
+			JarFile jarFidle = new JarFile(ls);
+			Manifest mf = jarFidle.getManifest();
+			*/
+			
+			JarInputStream jarStream = new JarInputStream(new ByteArrayInputStream(data));			
+			Manifest mf = jarStream.getManifest();
+			Attributes lol = mf.getMainAttributes();
+			System.out.println(lol.getValue("Class-Path"));	
+			 
 			
 			// create a jar file on the disk from the binary data
 			RegularFile jarFile = RegularFile.createTempFile("lmu-", ".jar");
 			jarFile.setContent(data);
 			
-			// permet de charge un fichier jar peut etre java pour pouvoir y faire des operations dessus
+			// load a jar file
 			ClassLoader classLoader = new URLClassLoader(new URL[] { jarFile.toURL() });
 
 			ClassPath classContainers = new ClassPath();

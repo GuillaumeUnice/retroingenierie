@@ -1,6 +1,5 @@
 package org.lucci.lmu.input;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;

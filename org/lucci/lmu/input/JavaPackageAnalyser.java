@@ -2,13 +2,10 @@ package org.lucci.lmu.input;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import javax.print.DocFlavor.URL;
 
 import org.lucci.lmu.Entities;
 import org.lucci.lmu.Entity;
@@ -21,57 +18,28 @@ public class JavaPackageAnalyser extends AbstractJavaAnalyser{
 	private ArrayList<String> strTest = new ArrayList<String>();
 	
 	private void listFilesForFolder(final File folder, String path) throws IOException {
-		String lol;
+		String newPath;
 	    for (final File fileEntry : folder.listFiles()) {
 	        if (fileEntry.isDirectory()) {
-	        	
-	        	//path += ("/" + fileEntry.getName());
 
 	        	if(path.charAt(path.length() - 1) != '/') {
-	        		lol = path + "/" + fileEntry.getName();
+	        		newPath = path + "/" + fileEntry.getName();
 	        	} else {
-	        		lol = path + fileEntry.getName();
+	        		newPath = path + fileEntry.getName();
 	        	}
 	        	
-	        	System.out.println("path : " + path);
-	            listFilesForFolder(fileEntry, lol);
+	            listFilesForFolder(fileEntry, newPath);
 	        } else {
 	        	if(path.charAt(path.length() - 1) != '/') {
 	        		path += "/";
 	        	}
 	        	
 	        	if(fileEntry.getName().substring(fileEntry.getName().length() - 5, fileEntry.getName().length()).equals("class")) {
-	        		
-	        		System.out.println(path + fileEntry.getName());
 	            	this.strTest.add(path + fileEntry.getName());
-	        	
 	        	}
 	        }
 	    }
 	}
-	
-	/*private void listFilesForFolder(final File folder, String path) throws IOException {
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	        	
-	        	path += ("/" + fileEntry.getName());
-	        	System.out.println("path : " + path);
-	            listFilesForFolder(fileEntry, path);
-	        } else {
-	        	if(path.charAt(path.length() - 1) != '/') {
-	        		path += "/";
-	        	}
-	        	System.out.println(fileEntry.getName().substring(fileEntry.getName().length() - 5, fileEntry.getName().length()));
-	        	if(fileEntry.getName().substring(fileEntry.getName().length() - 5, fileEntry.getName().length()).equals("class")) {
-	        		
-	        		System.out.println(path + fileEntry.getName());
-	            	this.strTest.add(path + fileEntry.getName());
-	        	
-	        	}
-	        }
-	    }
-	}*/	
-	
 	
 	@Override
 	public Model createConcreteModel(String path) throws ParseError {

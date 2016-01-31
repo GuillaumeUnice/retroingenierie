@@ -1,11 +1,8 @@
 package org.lucci.lmu.input;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,8 +10,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.lucci.lmu.AssociationRelation;
-import org.lucci.lmu.Attribute;
 import org.lucci.lmu.Entities;
 import org.lucci.lmu.Entity;
 import org.lucci.lmu.InheritanceRelation;
@@ -53,12 +48,6 @@ public abstract class AbstractJavaAnalyser extends AbstractAnalyser{
 		// System.out.println(src);
 		return DynamicCompiler.compile(fullName, src);
 	}
-
-	/*
-	 * public static void main(String[] args) {
-	 * System.out.println(createClassNamed("lucci.Coucou"));
-	 * System.out.println(createClassNamed("Coucou")); }
-	 */
 
 	public String computeEntityName(Class<?> c)
 	{
@@ -190,6 +179,7 @@ public abstract class AbstractJavaAnalyser extends AbstractAnalyser{
 		}*/
 	}
 
+	@SuppressWarnings("finally")
 	private void initOperations(Class<?> clazz, Entity entity, Model model)
 	{
 		try
@@ -224,25 +214,6 @@ public abstract class AbstractJavaAnalyser extends AbstractAnalyser{
 					}
 
 					entity.getOperations().add(op);
-
-					// for (Class<?> exceptionClass :
-					// method.getExceptionTypes())
-					// {
-					// Entity exceptionEntity = Entities.findEntity(model,
-					// exceptionClass.getName());
-					//
-					// if (exceptionEntity == null)
-					// {
-					// exceptionEntity = new Entity();
-					// exceptionEntity.setName(exceptionClass.getName());
-					// model.getEntities().add(exceptionEntity);
-					// }
-					//
-					// AssociationRelation relation = new
-					// AssociationRelation(entity, exceptionEntity);
-					// relation.setLabel("throws");
-					// model.getRelations().add(relation);
-					// }
 
 				}
 			}
@@ -296,10 +267,5 @@ public abstract class AbstractJavaAnalyser extends AbstractAnalyser{
 			return Visibility.PRIVATE;
 		}
 	}
-/*
-	public Model createModel(File file) throws ParseError, IOException
-	{
-		byte[] data = FileUtilities.getFileContent(file);
-		return createModel(data, null);
-	}*/
+
 }

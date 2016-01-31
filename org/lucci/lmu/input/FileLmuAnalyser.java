@@ -15,16 +15,16 @@ import toools.ClassContainer;
 import toools.ClassPath;
 import toools.io.file.RegularFile;
 
-public class FileLmuAnalyser2 extends AbstractLmuAnalyser{
+public class FileLmuAnalyser extends AbstractLmuAnalyser{
 	//singleton
-    private final static FileLmuAnalyser2 parser = new FileLmuAnalyser2();
+    private final static FileLmuAnalyser parser = new FileLmuAnalyser();
 
-    public static FileLmuAnalyser2 getParser()
+    public static FileLmuAnalyser getParser()
     {
 	return parser;
     }
 
-    private FileLmuAnalyser2()
+    private FileLmuAnalyser()
     {
     }
 	 @Override

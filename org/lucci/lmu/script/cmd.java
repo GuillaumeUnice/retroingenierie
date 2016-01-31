@@ -35,10 +35,10 @@ public class cmd extends LmuScript
 		cmd test = new cmd();
 		//test.run("/home/21307458/workspace/ProgDist/bin");
 
-		test.run("/home/21307458/workspace/RetroIngenierie/bin/org/lucci/lmu/test", "lol.png");
-		//test.run("/home/21307458/workspace/ProgConc2/bin");
+		//test.run("/home/21307458/workspace/RetroIngenierie/bin", "lol.png");
+		//test.run("/home/21307458/workspace/RetroIngenierie/bin/org/lucci/lmu/input", "/home/21307458/lol.png");
 		
-		//test.run("/home/21307458/Téléchargements/all.lmu");
+		test.run("/home/21307458/Téléchargements/all.lmu");
 		
 		//test.run("/home/21307458/Téléchargements/exo16.jar");
 		//test.run("/home/21307458/workspace/ProgDist/bin/client/MonInterfaceDistante.class");
@@ -84,9 +84,6 @@ public class cmd extends LmuScript
 				}
 				else
 				{
-					//byte[] inputData = inputFile.getContent();
-					
-					//Model model = modelFactory.createModel(args.get(0));
 					
 					AbstractAnalyser test = modelFactory.createConcreteProduct(args.get(0));
 					Model model = test.createConcreteModel(args.get(0));
