@@ -34,7 +34,6 @@ public class cmd extends LmuScript
 	{
 		cmd abstractAnalyser = new cmd();
 		abstractAnalyser.run("/home/21307458/workspace/RetroIngenierie/bin", "res.png");
-
 	}
 
 	@Override

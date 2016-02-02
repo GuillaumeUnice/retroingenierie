@@ -55,7 +55,9 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 			
 			JarInputStream jarStream = new JarInputStream(new ByteArrayInputStream(data));			
 			Manifest mf = jarStream.getManifest();
-			mf.
+			Attributes lol = mf.getMainAttributes();
+			System.out.println(lol.getValue("Class-Path"));	
+			 
 			
 			// create a jar file on the disk from the binary data
 			RegularFile jarFile = RegularFile.createTempFile("lmu-", ".jar");

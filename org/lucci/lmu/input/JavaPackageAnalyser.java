@@ -68,7 +68,7 @@ public class JavaPackageAnalyser extends AbstractJavaAnalyser{
         try {
             	
         	this.listFilesForFolder(new File(path), path);
-    
+
            	for(String object: this.strClasspath){
            		byte[] data = FileUtilities.getFileContent(new File(object));
            	
