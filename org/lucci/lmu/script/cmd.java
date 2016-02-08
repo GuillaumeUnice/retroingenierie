@@ -31,6 +31,7 @@ public class cmd extends LmuScript
 {
 
 	public static void main(String[] args) throws Throwable
+
 	{
 		cmd test = new cmd();
 		//test.run("/home/21307458/workspace/ProgDist/bin");
@@ -43,6 +44,7 @@ public class cmd extends LmuScript
 		
 		test.run("/home/21307458/Téléchargements/exo16.jar");
 		//test.run("/home/21307458/workspace/ProgDist/bin/client/MonInterfaceDistante.class");
+
 	}
 
 	@Override

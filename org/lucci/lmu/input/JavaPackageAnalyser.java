@@ -15,7 +15,7 @@ import toools.io.FileUtilities;
 
 public class JavaPackageAnalyser extends AbstractJavaAnalyser{
 
-	private ArrayList<String> strTest = new ArrayList<String>();
+	private ArrayList<String> strClasspath = new ArrayList<String>();
 	
 	private void listFilesForFolder(final File folder, String path) throws IOException {
 		String newPath;
@@ -35,7 +35,7 @@ public class JavaPackageAnalyser extends AbstractJavaAnalyser{
 	        	}
 	        	if(fileEntry.getName().length() > 5) {
 	        		if(fileEntry.getName().substring(fileEntry.getName().length() - 5, fileEntry.getName().length()).equals("class")) {
-		            	this.strTest.add(path + fileEntry.getName());
+		            	this.strClasspath.add(path + fileEntry.getName());
 		        	}	
 	        	}
 	        	
@@ -68,13 +68,13 @@ public class JavaPackageAnalyser extends AbstractJavaAnalyser{
         try {
             	
         	this.listFilesForFolder(new File(path), path);
-    
-           	for(String object: this.strTest){
-           		byte[] byteTest = FileUtilities.getFileContent(new File(object));
+
+           	for(String object: this.strClasspath){
+           		byte[] data = FileUtilities.getFileContent(new File(object));
            	
            		
-               	ByteClassLoader test = new ByteClassLoader();
-               	Class loadedMyClass = test.findClass(null, byteTest);
+               	ByteClassLoader byteClassLoader = new ByteClassLoader();
+               	Class loadedMyClass = byteClassLoader.findClass(null, data);
                 if(loadedMyClass != null) {
 
                		Entity entity = new Entity();
