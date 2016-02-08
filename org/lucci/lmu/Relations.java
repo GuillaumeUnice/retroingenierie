@@ -73,6 +73,21 @@ public class Relations
 
 		return rels;
 	}
+	
+	public static Set<Relation> findRelationsInvolvingUnitDeploy(UnitDeploy unitDeploy, Collection<Relation> relations)
+	{
+		Set<Relation> rels = new HashSet<Relation>();
+
+		for (Relation relation : relations)
+		{
+			if (relation.involveUnitDeploy(unitDeploy))
+			{
+				rels.add(relation);
+			}
+		}
+
+		return rels;
+	}
 
 	public static Relation findRelation(Set<Relation> relations, Class<?> c, Entity tail, Entity head)
 	{
@@ -93,6 +108,14 @@ public class Relations
 		Set<Relation> l2 = findRelationsInvolving(e2, relations);
 		return (Set<Relation>) Collections.intersection(l1, l2);
 	}
+	
+	public static Set<Relation> findRelationsInvolvingUnitDeploy(Set<Relation> relations, UnitDeploy u1, UnitDeploy u2)
+	{
+		Set<Relation> l1 = findRelationsInvolvingUnitDeploy(u1, relations);
+		Set<Relation> l2 = findRelationsInvolvingUnitDeploy(u2, relations);
+		return (Set<Relation>) Collections.intersection(l1, l2);
+	}
+	
 
 	public static Set<AssociationRelation> convertAttributesToCompositions(Set<Attribute> attributes, Entity entity, Model model)
 	{

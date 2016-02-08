@@ -10,6 +10,7 @@ package org.lucci.lmu;
 public class Relation extends ModelElement
 {
 	private Entity tailEntity, headEntity;
+	private UnitDeploy tailUnitDeploy, headUnitDeploy;
 
 	public Relation(Entity tail, Entity head)
 	{
@@ -17,11 +18,29 @@ public class Relation extends ModelElement
 		setTailEntity(tail);
 	}
 
+	public Relation(UnitDeploy tail, UnitDeploy head)
+	{
+		setHeadUnitDeploy(head);
+		setTailUnitDeploy(tail);
+	}
+	
+	public UnitDeploy getHeadUnitDeploy()
+	{
+		return headUnitDeploy;
+	}
+	
 	public Entity getHeadEntity()
 	{
 		return headEntity;
 	}
 
+	public void setHeadUnitDeploy(UnitDeploy headUnitDeploy)
+	{
+		if (headUnitDeploy == null) throw new NullPointerException();
+
+		this.headUnitDeploy = headUnitDeploy;
+	}
+	
 	public void setHeadEntity(Entity headEntity)
 	{
 		if (headEntity == null) throw new NullPointerException();
@@ -29,11 +48,23 @@ public class Relation extends ModelElement
 		this.headEntity = headEntity;
 	}
 
+	public UnitDeploy getTailUnitDeploy()
+	{
+		return tailUnitDeploy;
+	}
+	
 	public Entity getTailEntity()
 	{
 		return tailEntity;
 	}
 
+	public void setTailUnitDeploy(UnitDeploy tailUnitDeploy)
+	{
+		if (tailUnitDeploy == null) throw new NullPointerException();
+
+		this.tailUnitDeploy = tailUnitDeploy;
+	}
+	
 	public void setTailEntity(Entity tailEntity)
 	{
 		if (tailEntity == null) throw new NullPointerException();
@@ -51,6 +82,11 @@ public class Relation extends ModelElement
 	public boolean involve(Entity entity)
 	{
 		return getTailEntity() == entity || getHeadEntity() == entity;
+	}
+	
+	public boolean involveUnitDeploy(UnitDeploy unitDeploy)
+	{
+		return getTailUnitDeploy() == unitDeploy || getHeadUnitDeploy() == unitDeploy;
 	}
 
 	public Entity getEntityRelatedTo(Entity entity)

@@ -33,4 +33,35 @@ public class InheritanceRelation extends Relation
 	{
 		setTailEntity(e);
 	}
+	
+	
+	
+	
+	
+	
+	
+	public InheritanceRelation(UnitDeploy tail, UnitDeploy head)
+	{
+		super(tail, head);
+	}
+
+	public UnitDeploy getSuperUnitDeploy()
+	{
+		return getHeadUnitDeploy();
+	}
+	
+	public void setSuperUnitDeploy(UnitDeploy e)
+	{
+		setHeadUnitDeploy(e);
+	}
+
+	public UnitDeploy getSubUnitDeploy()
+	{
+		return getTailUnitDeploy();
+	}
+
+	public void setSubUnitDeploy(UnitDeploy e)
+	{
+		setTailUnitDeploy(e);
+	}
 }

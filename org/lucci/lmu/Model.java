@@ -51,6 +51,7 @@ public class Model extends ModelElement
 		return Collections.unmodifiableSet(entities);
 	}
 	
+	
 	public Set<UnitDeploy> getUnitDeploy()
 	{
 		return Collections.unmodifiableSet(deploymentUnits);
@@ -165,6 +166,35 @@ public class Model extends ModelElement
 	{
 		this.entities.remove(entity);
 		return removeRelationsInvolving(entity);
+	}
+	
+	public Set<Relation> removeUnitDeploy(UnitDeploy unitDeploy)
+	{
+		this.entities.remove(unitDeploy);
+		return removeRelationsInvolving(unitDeploy);
+	}
+	
+	/**
+	 * Removes all the relations involving the given entity. Returns all the
+	 * removed relations.
+	 */
+	public Set<Relation> removeRelationsInvolving(UnitDeploy unitDeploy)
+	{
+		Set<Relation> removed = new HashSet<Relation>();
+		Iterator<Relation> relationIterator = this.relations.iterator();
+
+		while (relationIterator.hasNext())
+		{
+			Relation rel = relationIterator.next();
+
+			if (rel.involveUnitDeploy(unitDeploy))
+			{
+				relationIterator.remove();
+				removed.add(rel);
+			}
+		}
+
+		return removed;
 	}
 	
 	/**

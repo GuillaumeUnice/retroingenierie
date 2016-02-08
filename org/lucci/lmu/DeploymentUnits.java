@@ -83,7 +83,7 @@ public class DeploymentUnits {
 
 		for (UnitDeploy UnitDeploy : deploymentUnits)
 		{
-			if (Relations.findRelationsInvolving(UnitDeploy, model.getRelations()).isEmpty())
+			if (Relations.findRelationsInvolvingUnitDeploy(UnitDeploy, model.getRelations()).isEmpty())
 			{
 				isolatedDeploymentUnits.add(UnitDeploy);
 			}
@@ -112,7 +112,7 @@ public class DeploymentUnits {
 	public static Collection<UnitDeploy> getNeighborDeploymentUnits(UnitDeploy UnitDeploy, Model model)
 	{
 		Collection<UnitDeploy> neighbors = new HashSet<UnitDeploy>();
-		Collection<org.lucci.lmu.Relation> relations = Relations.findRelationsInvolving(UnitDeploy, model.getRelations());
+		Collection<org.lucci.lmu.Relation> relations = Relations.findRelationsInvolvingUnitDeploy(UnitDeploy, model.getRelations());
 
 		for (org.lucci.lmu.Relation relation : relations)
 		{
@@ -227,20 +227,20 @@ public class DeploymentUnits {
 
 	public static void retainDeploymentUnits(Set<UnitDeploy> s, Model model)
 	{
-		removeDeploymentUnits((Set<UnitDeploy>) Collections.difference(model.getDeploymentUnits(), s), model);
+		removeDeploymentUnits((Set<UnitDeploy>) Collections.difference(model.getUnitDeploy(), s), model);
 	}
 
 	public static Set<UnitDeploy> findNonPrimitiveDeploymentUnits(Model model)
 	{
 		Set<UnitDeploy> matchingDeploymentUnits = new HashSet<UnitDeploy>();
 
-		for (UnitDeploy UnitDeploy : model.getDeploymentUnits())
+		/*for (UnitDeploy UnitDeploy : model.getUnitDeploy())
 		{
 			if (!UnitDeploy.isPrimitive())
 			{
 				matchingDeploymentUnits.add(UnitDeploy);
 			}
-		}
+		}*/
 
 		return matchingDeploymentUnits;
 	}
@@ -265,7 +265,7 @@ public class DeploymentUnits {
 	{
 		Set<UnitDeploy> res = new HashSet<UnitDeploy>();
 		
-		for (UnitDeploy e : model.getDeploymentUnits())
+		for (UnitDeploy e : model.getUnitDeploy())
 		{
 			if (DeploymentUnits.isSuperUnitDeploy(e, subUnitDeploy, model.getRelations()))
 			{
@@ -278,7 +278,7 @@ public class DeploymentUnits {
 
 	public static boolean isSuperUnitDeploy(UnitDeploy mother, UnitDeploy child, Set<Relation> among)
 	{
-		for (Relation r : Relations.findRelationsInvolving(among, mother, child))
+		for (Relation r : Relations.findRelationsInvolvingUnitDeploy(among, mother, child))
 		{
 			if (r instanceof InheritanceRelation)
 			{
