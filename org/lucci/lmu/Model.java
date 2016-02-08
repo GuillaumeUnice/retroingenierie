@@ -18,6 +18,7 @@ import org.lucci.lmu.input.ParseError;
 public class Model extends ModelElement
 {
 	private Set<Entity> entities = new HashSet<Entity>();
+	private Set<UnitDeploy> deploymentUnits = new HashSet<UnitDeploy>();
 	private Set<Relation> relations = new HashSet<Relation>();
 	private Set<Group> groups = new HashSet<Group>();
 	private Set<Collection<Entity>> alignments = new HashSet<Collection<Entity>>();
@@ -49,6 +50,11 @@ public class Model extends ModelElement
 	{
 		return Collections.unmodifiableSet(entities);
 	}
+	
+	public Set<UnitDeploy> getUnitDeploy()
+	{
+		return Collections.unmodifiableSet(deploymentUnits);
+	}
 
 	public Set<Relation> getRelations()
 	{
@@ -64,6 +70,15 @@ public class Model extends ModelElement
 		entity.setPrimitive(true);
 		entity.setVisible(false);
 		return entity;
+	}
+	
+	private UnitDeploy createPrimitiveUnitDeploy(String name)
+	{
+		if (name == null) throw new NullPointerException();
+
+		UnitDeploy unitDeploy = new UnitDeploy();
+		unitDeploy.setName(name);
+		return unitDeploy;
 	}
 
 	public Collection<Group> getGroups()
@@ -86,6 +101,21 @@ public class Model extends ModelElement
 		}
 	}
 
+	public void addUnitDeploy(UnitDeploy newUnitDeploy)
+	{
+		if (newUnitDeploy == null)
+			throw new NullPointerException();
+		
+		UnitDeploy e = DeploymentUnits.findUnitDeployByName(this, newUnitDeploy.getName());
+
+		// this entity does not yet exist
+		if (e == null)
+		{
+			newUnitDeploy.setModel(this);
+			this.deploymentUnits.add(newUnitDeploy);
+		}
+	}
+	
 	public void addRelation(Relation newRelation)
 	{
 		if (newRelation == null)
