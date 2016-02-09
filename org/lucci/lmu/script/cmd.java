@@ -31,9 +31,20 @@ public class cmd extends LmuScript
 {
 
 	public static void main(String[] args) throws Throwable
+
 	{
-		cmd abstractAnalyser = new cmd();
-		abstractAnalyser.run("/home/21307458/workspace/RetroIngenierie/bin", "res.png");
+		cmd test = new cmd();
+		//test.run("/home/21307458/workspace/ProgDist/bin");
+
+		//test.run("/home/21307458/workspace/RetroIngenierie/bin", "lol.png");
+		//test.run("/home/21307458/retroingenierie/toools.jar");
+		//test.run("/home/21307458/workspace/RetroIngenierie/bin");
+		
+		//test.run("/home/21307458/Téléchargements/all.lmu");
+		
+		test.run("/home/21307458/Téléchargements/exo16.jar");
+		//test.run("/home/21307458/workspace/ProgDist/bin/client/MonInterfaceDistante.class");
+
 	}
 
 	@Override

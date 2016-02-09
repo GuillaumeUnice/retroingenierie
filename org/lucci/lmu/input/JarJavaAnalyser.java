@@ -50,7 +50,7 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 			 
 			
 			// create a jar file on the disk from the binary data
-			RegularFile jarFile = RegularFile.createTempFile("lmu-", ".jar");
+			/*RegularFile jarFile = RegularFile.createTempFile("lmu-", ".jar");
 			jarFile.setContent(data);
 			
 			// load a jar file
@@ -78,13 +78,13 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 					entity_class.put(entity, thisClass);
 					model.addEntity(entity);
 				}
-			}
+			}*/
 
 			// at this only the name of entities is known
 			// neither members nor relation are known
 			// let's find them
 			fillModel(model);
-			jarFile.delete();
+			//jarFile.delete();
 		}
 		catch (IOException ex)
 		{

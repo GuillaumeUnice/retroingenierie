@@ -71,9 +71,9 @@ public abstract class AbstractJavaAnalyser extends AbstractAnalyser{
 			if (!entity.isPrimitive())
 			{
 				Class<?> clazz = entity_class.get(entity);
-				initInheritance(clazz, entity, model);
-				initAttributes(clazz, entity, model);
-				initOperations(clazz, entity, model);
+				//initInheritance(clazz, entity, model);
+				//initAttributes(clazz, entity, model);
+				//initOperations(clazz, entity, model);
 			}
 		}
 	}
