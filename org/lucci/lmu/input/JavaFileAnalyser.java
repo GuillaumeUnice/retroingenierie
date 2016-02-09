@@ -1,6 +1,5 @@
 package org.lucci.lmu.input;
 
-
 public class JavaFileAnalyser extends ModelFactory {
 
 	

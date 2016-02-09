@@ -46,17 +46,7 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 		{
 			// convert to byte
 			RegularFile inputFile = new RegularFile(path);
-			byte[] data = inputFile.getContent();
-			
-			/*File ls = new File(path);
-			JarFile jarFidle = new JarFile(ls);
-			Manifest mf = jarFidle.getManifest();
-			*/
-			
-			JarInputStream jarStream = new JarInputStream(new ByteArrayInputStream(data));			
-			Manifest mf = jarStream.getManifest();
-			Attributes lol = mf.getMainAttributes();
-			System.out.println(lol.getValue("Class-Path"));	
+			byte[] data = inputFile.getContent();	
 			 
 			
 			// create a jar file on the disk from the binary data
