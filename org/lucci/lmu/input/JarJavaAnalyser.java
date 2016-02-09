@@ -46,21 +46,11 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 		{
 			// convert to byte
 			RegularFile inputFile = new RegularFile(path);
-			byte[] data = inputFile.getContent();
-			
-			/*File ls = new File(path);
-			JarFile jarFidle = new JarFile(ls);
-			Manifest mf = jarFidle.getManifest();
-			*/
-			
-			JarInputStream jarStream = new JarInputStream(new ByteArrayInputStream(data));			
-			Manifest mf = jarStream.getManifest();
-			Attributes lol = mf.getMainAttributes();
-			System.out.println(lol.getValue("Class-Path"));	
+			byte[] data = inputFile.getContent();	
 			 
 			
 			// create a jar file on the disk from the binary data
-			RegularFile jarFile = RegularFile.createTempFile("lmu-", ".jar");
+			/*RegularFile jarFile = RegularFile.createTempFile("lmu-", ".jar");
 			jarFile.setContent(data);
 			
 			// load a jar file
@@ -88,13 +78,13 @@ public class JarJavaAnalyser extends AbstractJavaAnalyser{
 					entity_class.put(entity, thisClass);
 					model.addEntity(entity);
 				}
-			}
+			}*/
 
 			// at this only the name of entities is known
 			// neither members nor relation are known
 			// let's find them
 			fillModel(model);
-			jarFile.delete();
+			//jarFile.delete();
 		}
 		catch (IOException ex)
 		{

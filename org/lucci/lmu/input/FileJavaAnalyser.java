@@ -40,8 +40,8 @@ public class FileJavaAnalyser extends AbstractJavaAnalyser {
     		RegularFile inputFile = new RegularFile(path);
     		byte[] data = inputFile.getContent();
         	
-        	ByteClassLoader test = new ByteClassLoader();
-        	Class loadedMyClass = test.findClass(null, data);
+        	ByteClassLoader byteClassLoader = new ByteClassLoader();
+        	Class loadedMyClass = byteClassLoader.findClass(null, data);
 		     
 		    Entity entity = new Entity();
 			entity.setName(computeEntityName(loadedMyClass));
