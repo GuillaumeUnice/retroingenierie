@@ -89,6 +89,19 @@ public class Relations
 		return rels;
 	}
 
+	public static Relation findRelation(Set<Relation> relations, Class<?> c, UnitDeploy tail, UnitDeploy head)
+	{
+		for (Relation r : relations)
+		{
+			if (r.getTailUnitDeploy() == tail && r.getHeadUnitDeploy() == head && r.getClass() == c)
+			{
+				return r;
+			}
+		}
+
+		return null;
+	}
+	
 	public static Relation findRelation(Set<Relation> relations, Class<?> c, Entity tail, Entity head)
 	{
 		for (Relation r : relations)

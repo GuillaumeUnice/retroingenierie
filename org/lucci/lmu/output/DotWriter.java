@@ -13,6 +13,7 @@ import org.lucci.lmu.Model;
 import org.lucci.lmu.ModelElement;
 import org.lucci.lmu.Operation;
 import org.lucci.lmu.Relation;
+import org.lucci.lmu.UnitDeploy;
 import org.lucci.lmu.Visibility;
 
 /*
@@ -51,7 +52,14 @@ public class DotWriter extends AbstractWriter
 
 	Collection<Entity> visibleEntities = (Collection<Entity>) ModelElement.findVisibleModelElements(model
 		.getEntities());
-
+	System.out.println(visibleEntities);
+	
+	Collection<UnitDeploy> visibleUnitDeploy = (Collection<UnitDeploy>) ModelElement.findVisibleModelElements(model
+			.getUnitDeploy());
+	System.out.println(model
+			.getUnitDeploy());
+	
+	
 	for (Entity entity : visibleEntities)
 	{
 	    Collection<Attribute> visibleAttributes = (List<Attribute>) ModelElement.findVisibleModelElements(entity
@@ -163,15 +171,72 @@ public class DotWriter extends AbstractWriter
 	    }
 
 	}
+	
+	
+	for (UnitDeploy unitDeploy : visibleUnitDeploy)
+	{
 
+	    boolean isRecord = true;// visibleAttributes.size() +
+				    // visibleOperations.size() > 0;
+
+	    buf.append("\n\t");
+
+	    buf.append(quoteNodeNameIfNecessary(String.valueOf(unitDeploy.getName().hashCode())));
+	    buf.append(" [");
+	    buf.append("shape=\"" + (isRecord ? "record" : "box") + "\"");
+
+	    if (unitDeploy.getColorName() != null)
+	    {
+		buf.append(", fillcolor=" + unitDeploy.getColorName());
+		buf.append(", style=filled");
+	    }
+
+	    buf.append(", fontcolor=black");
+	    buf.append(", fontsize=10.0");
+
+
+			buf.append(", label=\"" + "{");
+
+			buf.append(unitDeploy.getName());
+	
+			buf.append((isRecord ? "}" : "") + "\"];");
+
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	System.out.println(model.getRelations().size());
 	for (Relation relation : model.getRelations())
 	{
 	    // c0 -> c1 [taillabel="1", label="come from", headlabel="1",
 	    // fontname="Helvetica", fontcolor="black", fontsize=10.0,
 	    // color="black", , arrowtail=ediamond];
 	    // System.out.println(relation);
-
-	    if (relation.getTailEntity().isVisible() && relation.getHeadEntity().isVisible())
+		//System.out.println(relation.toString());
+	    /*if (relation.getTailEntity().isVisible() && relation.getHeadEntity().isVisible())
 	    {
 		if (relation instanceof AssociationRelation)
 		{
@@ -230,7 +295,21 @@ public class DotWriter extends AbstractWriter
 
 		    buf.append("];");
 		}
-	    }
+	    }*/
+		
+		
+	
+	    InheritanceRelation heritage = (InheritanceRelation) relation;
+	    buf.append("\n\t");
+	    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSubUnitDeploy().getName().hashCode())));
+	    buf.append(" -> ");
+	    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSuperUnitDeploy().getName().hashCode())));
+	    buf.append(" [arrowhead=onormal");
+	
+	    buf.append("];");
+		
+	    
+		
 	}
 
 	int gid = 0;

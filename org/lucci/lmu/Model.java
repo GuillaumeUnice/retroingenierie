@@ -130,6 +130,21 @@ public class Model extends ModelElement
 			this.relations.add(newRelation);
 		}
 	}
+	
+	public void addRelationUnitDeploy(Relation newRelation)
+	{
+		if (newRelation == null)
+			throw new NullPointerException();
+
+		Relation r = Relations.findRelation(getRelations(), newRelation.getClass(), newRelation.getTailUnitDeploy(), newRelation.getHeadUnitDeploy());
+
+		// this relation does not yet exist
+		if (r == null)
+		{
+			this.relations.add(newRelation);
+		}
+	}
+	
 
 	public void merge(Model om)
 	{

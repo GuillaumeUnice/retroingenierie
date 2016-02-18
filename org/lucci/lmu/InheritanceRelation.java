@@ -42,7 +42,9 @@ public class InheritanceRelation extends Relation
 	
 	public InheritanceRelation(UnitDeploy tail, UnitDeploy head)
 	{
+		
 		super(tail, head);
+		
 	}
 
 	public UnitDeploy getSuperUnitDeploy()

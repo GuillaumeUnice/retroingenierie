@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.lucci.lmu.Model;
+import org.lucci.lmu.output.DotWriter;
 
 import toools.extern.ExternalProgram;
 import toools.extern.Proces;
