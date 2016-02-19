@@ -26,7 +26,244 @@ import org.lucci.lmu.Visibility;
 public class DotWriter extends AbstractWriter
 {
     private String fontName = "Times";
+    
+    private StringBuffer writeEntity (Collection<Entity> visibleEntities, Model model) {
+    	StringBuffer buf = new StringBuffer();
+    	
+    	
+    	for (Entity entity : visibleEntities)
+    	{
+    	    Collection<Attribute> visibleAttributes = (List<Attribute>) ModelElement.findVisibleModelElements(entity
+    		    .getAttributes());
+    	    Collection<Operation> visibleOperations = (List<Operation>) ModelElement.findVisibleModelElements(entity
+    		    .getOperations());
+    	    boolean isRecord = true;// visibleAttributes.size() +
+    				    // visibleOperations.size() > 0;
 
+    	    buf.append("\n\t");
+
+    	    buf.append(quoteNodeNameIfNecessary(String.valueOf(entity.getName().hashCode())));
+    	    buf.append(" [");
+    	    buf.append("shape=\"" + (isRecord ? "record" : "box") + "\"");
+
+    	    if (entity.getColorName() != null)
+    	    {
+    		buf.append(", fillcolor=" + entity.getColorName());
+    		buf.append(", style=filled");
+    	    }
+
+    	    buf.append(", fontcolor=black");
+    	    buf.append(", fontsize=10.0");
+
+    	    if (isRecord)
+    	    {
+    		buf.append(", label=\"" + "{");
+
+    		for (String st : entity.getStereoTypeList())
+    		{
+    		    buf.append("&lt;&lt;" + st + "&gt;&gt;\\n");
+    		}
+    		
+    		if (!entity.getStereoTypeList().isEmpty())
+    		{
+    		    buf.append("\\n");
+    		}
+
+    		buf.append(entity.getName());
+
+    		if (!visibleAttributes.isEmpty())
+    		{
+    		    buf.append("|");
+
+    		    for (Attribute attribute : visibleAttributes)
+    		    {
+    			if (attribute.getVisibility() != null)
+    			{
+    			    buf.append(getUMLVisibility(attribute.getVisibility()) + " ");
+    			}
+
+    			buf.append(attribute.getName());
+
+    			if (attribute.getType() != null)
+    			{
+    			    buf.append(" : " + escapeStringIfNecessary(attribute.getType().getName()));
+    			}
+
+    			buf.append("\\l");
+    		    }
+    		}
+
+    		if (!visibleOperations.isEmpty())
+    		{
+    		    buf.append("|");
+
+    		    for (Operation operation : visibleOperations)
+    		    {
+    			if (operation.isVisible())
+    			{
+    			    if (operation.getVisibility() != null)
+    			    {
+    				buf.append(getUMLVisibility(operation.getVisibility()) + " ");
+    			    }
+
+    			    buf.append(operation.getName() + "(");
+    			    Iterator<Entity> parameterIterator = operation.getParameterList().iterator();
+
+    			    while (parameterIterator.hasNext())
+    			    {
+    				Entity parameterType = parameterIterator.next();
+    				buf.append(escapeStringIfNecessary(parameterType.getName()));
+
+    				if (parameterIterator.hasNext())
+    				{
+    				    buf.append(", ");
+    				}
+    			    }
+
+    			    buf.append(")");
+
+    			    if (operation.getType() != null)
+    			    {
+    				buf.append(" : " + escapeStringIfNecessary(operation.getType().getName()));
+    			    }
+
+    			    buf.append("\\l");
+    			}
+    		    }
+    		}
+
+    		buf.append((isRecord ? "}" : "") + "\"];");
+    	    }
+    	    else
+    	    {
+    		buf.append(", label=\"" + (entity.isAbsract() ? "&lt;&lt;abstract&gt;&gt;\\n" : "") + entity.getName());
+
+    		buf.append("\"];");
+    	    }
+
+    	}
+
+    	for (Relation relation : model.getRelations())
+    	{
+    	    // c0 -> c1 [taillabel="1", label="come from", headlabel="1",
+    	    // fontname="Helvetica", fontcolor="black", fontsize=10.0,
+    	    // color="black", , arrowtail=ediamond];
+    	    if (relation.getTailEntity().isVisible() && relation.getHeadEntity().isVisible())
+    	    {
+	    		if (relation instanceof AssociationRelation)
+	    		{
+	    		    AssociationRelation assoc = (AssociationRelation) relation;
+	    		    buf.append("\n\t");
+	    		    buf.append(quoteNodeNameIfNecessary(String.valueOf(assoc.getContainedEntity().getName().hashCode())));
+	    		    buf.append(" -> ");
+	    		    buf.append(quoteNodeNameIfNecessary(String.valueOf(assoc.getContainerEntity().getName().hashCode())));
+	
+	    		    if (assoc.getType() == AssociationRelation.TYPE.ASSOCIATION)
+	    		    {
+	    			buf.append(" [arrowhead=none");
+	    		    }
+	    		    else if (assoc.getType() == AssociationRelation.TYPE.AGGREGATION)
+	    		    {
+	    			buf.append(" [arrowhead=odiamond");
+	    		    }
+	    		    else if (assoc.getType() == AssociationRelation.TYPE.COMPOSITION)
+	    		    {
+	    			buf.append(" [arrowhead=diamond");
+	    		    }
+	    		    else if (assoc.getType() == AssociationRelation.TYPE.DIRECTION)
+	    		    {
+	    			buf.append(" [arrowtail=vee");
+	    		    }
+	    		    else
+	    		    {
+	    			throw new IllegalStateException("unknow relation type");
+	    		    }
+	
+	    		    if (assoc.getCardinality() != null && !assoc.getCardinality().equals("1"))
+	    		    {
+	    			buf.append(", taillabel=\"" + assoc.getCardinality() + "\"");
+	    		    }
+	
+	    		    if (assoc.getLabel() != null)
+	    		    {
+	    			buf.append(", label=\"" + assoc.getLabel() + "\"");
+	    		    }
+	
+	    		    buf.append("];");
+	    		}
+	    		else
+	    		{
+	    		    InheritanceRelation heritage = (InheritanceRelation) relation;
+	    		    buf.append("\n\t");
+	    		    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSubEntity().getName().hashCode())));
+	    		    buf.append(" -> ");
+	    		    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSuperEntity().getName().hashCode())));
+	    		    buf.append(" [arrowhead=onormal");
+	
+	    		    if (heritage.getSuperEntity().isInterface())
+	    		    {
+	    			buf.append(",style=dashed");
+	    		    }
+	
+	    		    buf.append("];");
+	    		}
+    	    }
+    			
+    	}
+    	
+    	return buf;
+    }
+    
+    private StringBuffer writeUnitDeploy (Collection<UnitDeploy> visibleUnitDeploy,Model model) {
+    	StringBuffer buf = new StringBuffer();
+    	
+    	for (UnitDeploy unitDeploy : visibleUnitDeploy)
+    	{
+
+    	    boolean isRecord = true;// visibleAttributes.size() +
+    				    // visibleOperations.size() > 0;
+
+    	    buf.append("\n\t");
+
+    	    buf.append(quoteNodeNameIfNecessary(String.valueOf(unitDeploy.getName().hashCode())));
+    	    buf.append(" [");
+    	    buf.append("shape=\"" + (isRecord ? "record" : "box") + "\"");
+
+    	    if (unitDeploy.getColorName() != null)
+    	    {
+    		buf.append(", fillcolor=" + unitDeploy.getColorName());
+    		buf.append(", style=filled");
+    	    }
+
+    	    buf.append(", fontcolor=black");
+    	    buf.append(", fontsize=10.0");
+
+
+    			buf.append(", label=\"" + "{");
+
+    			buf.append(unitDeploy.getName());
+    	
+    			buf.append((isRecord ? "}" : "") + "\"];");
+
+
+    	}
+    	
+    	for (Relation relation : model.getRelations())
+    	{
+    	
+    	    InheritanceRelation heritage = (InheritanceRelation) relation;
+    	    buf.append("\n\t");
+    	    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSubUnitDeploy().getName().hashCode())));
+    	    buf.append(" -> ");
+    	    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSuperUnitDeploy().getName().hashCode())));
+    	    buf.append(" [arrowhead=onormal");
+    	
+    	    buf.append("];");
+    		
+    	}
+    	return buf;
+    }
+    
     @Override
     public byte[] writeModel(Model model) throws WriterException
     {
@@ -52,264 +289,17 @@ public class DotWriter extends AbstractWriter
 
 	Collection<Entity> visibleEntities = (Collection<Entity>) ModelElement.findVisibleModelElements(model
 		.getEntities());
-	System.out.println(visibleEntities);
+	
+	if(visibleEntities.size() != 0) {
+		buf.append(writeEntity(visibleEntities, model));
+	}
+	
 	
 	Collection<UnitDeploy> visibleUnitDeploy = (Collection<UnitDeploy>) ModelElement.findVisibleModelElements(model
 			.getUnitDeploy());
-	System.out.println(model
-			.getUnitDeploy());
-	
-	
-	for (Entity entity : visibleEntities)
-	{
-	    Collection<Attribute> visibleAttributes = (List<Attribute>) ModelElement.findVisibleModelElements(entity
-		    .getAttributes());
-	    Collection<Operation> visibleOperations = (List<Operation>) ModelElement.findVisibleModelElements(entity
-		    .getOperations());
-	    boolean isRecord = true;// visibleAttributes.size() +
-				    // visibleOperations.size() > 0;
 
-	    buf.append("\n\t");
-
-	    buf.append(quoteNodeNameIfNecessary(String.valueOf(entity.getName().hashCode())));
-	    buf.append(" [");
-	    buf.append("shape=\"" + (isRecord ? "record" : "box") + "\"");
-
-	    if (entity.getColorName() != null)
-	    {
-		buf.append(", fillcolor=" + entity.getColorName());
-		buf.append(", style=filled");
-	    }
-
-	    buf.append(", fontcolor=black");
-	    buf.append(", fontsize=10.0");
-
-	    if (isRecord)
-	    {
-		buf.append(", label=\"" + "{");
-
-		for (String st : entity.getStereoTypeList())
-		{
-		    buf.append("&lt;&lt;" + st + "&gt;&gt;\\n");
-		}
-		
-		if (!entity.getStereoTypeList().isEmpty())
-		{
-		    buf.append("\\n");
-		}
-
-		buf.append(entity.getName());
-
-		if (!visibleAttributes.isEmpty())
-		{
-		    buf.append("|");
-
-		    for (Attribute attribute : visibleAttributes)
-		    {
-			if (attribute.getVisibility() != null)
-			{
-			    buf.append(getUMLVisibility(attribute.getVisibility()) + " ");
-			}
-
-			buf.append(attribute.getName());
-
-			if (attribute.getType() != null)
-			{
-			    buf.append(" : " + escapeStringIfNecessary(attribute.getType().getName()));
-			}
-
-			buf.append("\\l");
-		    }
-		}
-
-		if (!visibleOperations.isEmpty())
-		{
-		    buf.append("|");
-
-		    for (Operation operation : visibleOperations)
-		    {
-			if (operation.isVisible())
-			{
-			    if (operation.getVisibility() != null)
-			    {
-				buf.append(getUMLVisibility(operation.getVisibility()) + " ");
-			    }
-
-			    buf.append(operation.getName() + "(");
-			    Iterator<Entity> parameterIterator = operation.getParameterList().iterator();
-
-			    while (parameterIterator.hasNext())
-			    {
-				Entity parameterType = parameterIterator.next();
-				buf.append(escapeStringIfNecessary(parameterType.getName()));
-
-				if (parameterIterator.hasNext())
-				{
-				    buf.append(", ");
-				}
-			    }
-
-			    buf.append(")");
-
-			    if (operation.getType() != null)
-			    {
-				buf.append(" : " + escapeStringIfNecessary(operation.getType().getName()));
-			    }
-
-			    buf.append("\\l");
-			}
-		    }
-		}
-
-		buf.append((isRecord ? "}" : "") + "\"];");
-	    }
-	    else
-	    {
-		buf.append(", label=\"" + (entity.isAbsract() ? "&lt;&lt;abstract&gt;&gt;\\n" : "") + entity.getName());
-
-		buf.append("\"];");
-	    }
-
-	}
-	
-	
-	for (UnitDeploy unitDeploy : visibleUnitDeploy)
-	{
-
-	    boolean isRecord = true;// visibleAttributes.size() +
-				    // visibleOperations.size() > 0;
-
-	    buf.append("\n\t");
-
-	    buf.append(quoteNodeNameIfNecessary(String.valueOf(unitDeploy.getName().hashCode())));
-	    buf.append(" [");
-	    buf.append("shape=\"" + (isRecord ? "record" : "box") + "\"");
-
-	    if (unitDeploy.getColorName() != null)
-	    {
-		buf.append(", fillcolor=" + unitDeploy.getColorName());
-		buf.append(", style=filled");
-	    }
-
-	    buf.append(", fontcolor=black");
-	    buf.append(", fontsize=10.0");
-
-
-			buf.append(", label=\"" + "{");
-
-			buf.append(unitDeploy.getName());
-	
-			buf.append((isRecord ? "}" : "") + "\"];");
-
-
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	System.out.println(model.getRelations().size());
-	for (Relation relation : model.getRelations())
-	{
-	    // c0 -> c1 [taillabel="1", label="come from", headlabel="1",
-	    // fontname="Helvetica", fontcolor="black", fontsize=10.0,
-	    // color="black", , arrowtail=ediamond];
-	    // System.out.println(relation);
-		//System.out.println(relation.toString());
-	    /*if (relation.getTailEntity().isVisible() && relation.getHeadEntity().isVisible())
-	    {
-		if (relation instanceof AssociationRelation)
-		{
-		    AssociationRelation assoc = (AssociationRelation) relation;
-		    buf.append("\n\t");
-		    buf.append(quoteNodeNameIfNecessary(String.valueOf(assoc.getContainedEntity().getName().hashCode())));
-		    buf.append(" -> ");
-		    buf.append(quoteNodeNameIfNecessary(String.valueOf(assoc.getContainerEntity().getName().hashCode())));
-
-		    if (assoc.getType() == AssociationRelation.TYPE.ASSOCIATION)
-		    {
-			buf.append(" [arrowhead=none");
-		    }
-		    else if (assoc.getType() == AssociationRelation.TYPE.AGGREGATION)
-		    {
-			buf.append(" [arrowhead=odiamond");
-		    }
-		    else if (assoc.getType() == AssociationRelation.TYPE.COMPOSITION)
-		    {
-			buf.append(" [arrowhead=diamond");
-		    }
-		    else if (assoc.getType() == AssociationRelation.TYPE.DIRECTION)
-		    {
-			buf.append(" [arrowtail=vee");
-		    }
-		    else
-		    {
-			throw new IllegalStateException("unknow relation type");
-		    }
-
-		    if (assoc.getCardinality() != null && !assoc.getCardinality().equals("1"))
-		    {
-			buf.append(", taillabel=\"" + assoc.getCardinality() + "\"");
-		    }
-
-		    if (assoc.getLabel() != null)
-		    {
-			buf.append(", label=\"" + assoc.getLabel() + "\"");
-		    }
-
-		    buf.append("];");
-		}
-		else
-		{
-		    InheritanceRelation heritage = (InheritanceRelation) relation;
-		    buf.append("\n\t");
-		    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSubEntity().getName().hashCode())));
-		    buf.append(" -> ");
-		    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSuperEntity().getName().hashCode())));
-		    buf.append(" [arrowhead=onormal");
-
-		    if (heritage.getSuperEntity().isInterface())
-		    {
-			buf.append(",style=dashed");
-		    }
-
-		    buf.append("];");
-		}
-	    }*/
-		
-		
-	
-	    InheritanceRelation heritage = (InheritanceRelation) relation;
-	    buf.append("\n\t");
-	    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSubUnitDeploy().getName().hashCode())));
-	    buf.append(" -> ");
-	    buf.append(quoteNodeNameIfNecessary(String.valueOf(heritage.getSuperUnitDeploy().getName().hashCode())));
-	    buf.append(" [arrowhead=onormal");
-	
-	    buf.append("];");
-		
-	    
-		
+	if(visibleUnitDeploy.size() != 0) {
+		buf.append(this.writeUnitDeploy(visibleUnitDeploy, model));
 	}
 
 	int gid = 0;
